@@ -1,4 +1,6 @@
+from ast import arg
 from typing import Callable, Dict, List
+from os import get_terminal_size
 
 from .mips import MIPS
 
@@ -56,6 +58,7 @@ class debugger(MIPS):
         # run [lines, -1 to run all]
         # br [condition]
         # dump [file]
+        print("-! `help` to see a list of all commands")
         try:
             while True:
                 print("-> ", end="")
@@ -98,6 +101,20 @@ class debugger(MIPS):
                     case 'pc':
                         line = " ".join(self.instruction_set[self.program_counter])
                         print(f"-| {self.program_counter} : {line}")
+                        
+                    # create [name, [pos]]
+                    # position can be omitted to create at current pointer
+                    case 'create':
+                        if len(arguments[1:]) == 2:
+                            self.instr_labels.update({arguments[1]: arguments[2]})
+                        elif len(arguments[1:]) == 1:
+                            self.instr_labels.update({arguments[1]: self.program_counter})
+                        else:
+                            print("-| Error: Invalid parameters passed:\n"
+                                  "-| Follow the template `create name *pos*`")
+                    case 'help':
+                        self.help()   
+                         
                     case '_':
                         print("invalid command, use h for help")
                         
@@ -112,3 +129,19 @@ class debugger(MIPS):
             else:
                 print(f"-| ERROR: Invalid tag, {arg} ignored")
                 
+    def help(self):
+        # Prints the help file attached
+        size, _ = get_terminal_size()
+        with open("docs/HELP.md") as file:
+            for line in file:
+                if size > len(line) - 3:
+                    print("-| " + line, end="")
+                else:
+                    while line:
+                        print("-| " + line[:size - 3])
+                        line = line[size - 3:]
+                        if len(line) < size:
+                            print("-| " + line, end="")
+                            break
+            print()
+                        
