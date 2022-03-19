@@ -23,4 +23,6 @@ file = sys.argv[1]
 # call mips emulator
 m = MIPS(file)
 
+
+# THIS IS WHERE WE WILL TIE IN THE GUI
 m.run()

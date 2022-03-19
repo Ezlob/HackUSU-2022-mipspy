@@ -134,11 +134,9 @@ def srl_(mips: MIPS, reg1, reg2, imd):
 
 # load word
 def lw(mips: MIPS, reg1, adr1: str):
-    print(adr1)
     if "(" in adr1:
         adr1 = lw_offset(mips, adr1)
-    print(mips.data[adr1 : adr1 + 4])
-    ret = int.from_bytes(mips.data[adr1 : adr1 + 4], "big", signed=True)
+    ret = int.from_bytes(mips.data[adr1: adr1 + 4], "big", signed=True)
     if reg1 == "ra":
         ret = ret // 4
 
@@ -147,21 +145,17 @@ def lw(mips: MIPS, reg1, adr1: str):
 
 # store word
 def sw(mips: MIPS, reg1, adr1):
-    bs = mips.registers[reg1].to_bytes(4, "big", signed=True)
+    bs = list(mips.registers[reg1].to_bytes(4, "big", signed=True))
 
     if "(" in adr1:
         adr1 = sw_offset(mips, adr1)
 
-    adr1 = adr1  # -> convert to 'our system'
-    controlpoint = mips.data_ptr + adr1
-    first_half = mips.data[:controlpoint]
-    try:
-        mips.data = first_half + bs + mips.data[(controlpoint + len(bs)) :]
-    except IndexError:
-        # Create more room if needed
-        mips.data = mips.data + (b"\x00" * len(bs))
-        mips.data = first_half + bs + mips.data[(controlpoint + len(bs)) :]
-    mips.data_ptr = len(mips.data)
+    l = list(mips.data)
+    if (len(l) - 1) < adr1 + 4:
+        l += [0] * ((adr1 + 4) - ((len(l)) - 1))
+    l[adr1 : adr1 + 4] = bs
+    mips.data = bytearray(l)
+    mips.data_ptr = len(mips.data) - 1
 
 
 # load upper immediate

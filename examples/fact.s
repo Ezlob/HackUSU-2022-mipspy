@@ -31,10 +31,10 @@ main:
 factorial:
     # base case -- still in parent's stack segment
     # adjust stack pointer to store return address and argument
-    addi    $sp, $sp, -8
+    addi    $sp, $sp, 8
     # save $s0 and $ra
-    sw      $s0, 4($sp)
-    sw      $ra, 0($sp)
+    sw      $s0, -4($sp)
+    sw      $ra, -8($sp)
     bne     $a0, $zero, else
     addi    $v0, $zero, 1    # return 1
     j fact_return
@@ -48,7 +48,7 @@ else:
     mult   $s0, $v0 # return x*Fact(x-1)
     mflo    $v0
 fact_return:
-    lw      $s0, 4($sp)
-    lw      $ra, 0($sp)
-    addi    $sp, $sp, 8
+    lw      $s0, -4($sp)
+    lw      $ra, -8($sp)
+    addi    $sp, $sp, -8
     jr      $ra

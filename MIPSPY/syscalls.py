@@ -5,20 +5,22 @@ from .mips import MIPS
 def syscall(mips: MIPS):
     watch = int(mips.registers.get("$v0"))
     match watch:
-        case 1 | 2 | 3 | 4:
-            # print cases
-            # a0 for string or int
+        case 1: 
             if (mips.registers.get("$a0") != 0):
-                value = mips.registers.get("$a0")
-                idx = mips.data_labels[value]
-                
-                print_string(mips.data[idx:])
+                value = int(mips.registers.get("$a0"))
+                print(value)
                 
             # f12 for double or float
             elif (mips.registers.get("$f12") != 0):
                 value = mips.registers.get("$f12")
                 print(value)
             return
+        case 2 | 3:
+            pass
+        case 4:
+            value = mips.registers.get('$a0')
+            print_string(mips.data[mips.data_labels[value]:])
+            
         case 5:
             # read_int
             mips.registers["$v0"] = int(input())
