@@ -68,32 +68,69 @@ def div(reg1, reg2):
     mips
 
 
-# LOGICAL
-# and
-def _and(reg1, reg2, reg3):
+#LOGICAL
+
+#and
+def and_(reg1,reg2,reg3):
     mips.registers[reg1] = mips.registers[reg2] & mips.registers[reg3]
 
-
-# or
-def _or(reg1, reg2, reg3):
+#or
+def or_(reg1,reg2,reg3):
     mips.registers[reg1] = mips.registers[reg2] | mips.registers[reg3]
 
-
-# and immediate
-def _andi(reg1, reg2, int):
+#and immediate
+def andi_(reg1,reg2,int):
     mips.registers[reg1] = mips.registers[reg2] & int
 
-
-# or immediate
-def _ori(reg1, reg2, int):
+#or immediate
+def ori_ (reg1,reg2,int):
     mips.registers[reg1] = mips.registers[reg2] | int
 
-
-# shift left logical
-def _sll(reg1, reg2, int):
+#shift left logical
+def sll_(reg1,reg2,int):
     mips.registers[reg1] = mips.registers[reg2] << int
 
+#shift right logical
+def srl_(reg1,reg2, int):
+    mips.registers[reg1] = mips.registers[reg2] >> int
 
-def _lui(reg1, const: int):
+#DATATRANSFER
+
+#load word
+def lw(reg1, adr1):
+    mips.registers[reg1] = adr1
+
+#store word
+def sw(reg1, adr1):
+    adr1 = mips.registers[reg1]
+
+#load upper immediate
+def lui(reg1, const: int):
     u_bytes = const.to_bytes(2, "big")
     l_bytes = mips.registers[reg1]
+
+#load address
+def la(reg1, lab):
+    mips.registers[reg1] = lab
+
+#load immediate
+def li(reg1, lab):
+    lab = mips.registers[reg1]
+
+#move from hi
+def mfhi(reg1):
+    mips.registers[reg1] #Dal DO
+
+#move from low 
+def mflo(reg1):
+    mips.registers[reg1] #Dal DO
+
+#move
+def move(reg1,reg2):
+    mips.registers[reg1] = mips.registers[reg2]
+
+#CONDITIONAL BRANCH
+
+#branch on equal 
+
+
