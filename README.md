@@ -1,10 +1,10 @@
-<h1> MIPSPY </h1>
-<h2> A MIPS simulator / debugger built in python </h2>
+# MIPSPY 
+## *A MIPS simulator / debugger built in python*
 
 MIPSPY aims to simplyfy the running, debugging, and creation of simple mips scripts using a lightweight terminal design, rather than a burdensome IDE like some other clients do.
 
 
-*DESIGNING PROCESS*
+## *DESIGNING PROCESS*
 
 - We aimed to create a tool that could be utilized in the debugging process for mips code
 
@@ -18,7 +18,12 @@ MIPSPY aims to simplyfy the running, debugging, and creation of simple mips scri
 
 - The UI group spent several hours learning a new language to code the UI in but then after careful consideration realized that building a wrapper that allowed other command line commands to be entered and processed would work for the vision we had
 
-- Once the code's bugs were smoothed out and we could execute simple programs like factorials, addition, string printing, and others, we connected the UI and the code together to create a usable user interface for running mips code
+- Once the code's bugs were smoothed out and we could execute simple programs like factorials, addition, string printing, and others, we connected the UI and the code together to create a usable user interface for running mips code.
+
+## Differences between hardware and our solution
+- Our program counter is stored line by line, so PC 1 clearly translates to line 1, making it easier to understand.  
+
+- Being implemented in this way allows us to in the future implement save states to be able to execute the code backwards, undoing what was done previously.
 
 
 
