@@ -1,9 +1,18 @@
-from typing import Dict, List, Tuple
+from typing import Dict, List, Callable
+
 from assemble import assembler
+import instructions
 from math import ceil
 
 
 class MIPS:
+    instruction_set: List[List[str]]
+    instr_labels: Dict[str, int]
+    data_set: List[List[str]]
+    data_labels: Dict[str, int]
+    
+    data: bytearray
+    
     def __init__(self, file: str):
 
         self.program_counter = 0
@@ -41,30 +50,81 @@ class MIPS:
             "ra": 0,
         }
         # Load instructions
-        self.instructions, self.labels = assembler(file)
-        # Load program counter
+        self.instructions, self.instr_labels, self.data, self.data_labels = assembler(file)
 
         # Load Data into memory
-
-    def load_data(self, instructions: List[Tuple], labels: Dict):
-        for instr in instructions:
-            # Get instruction to run
-            cmd: str = get_instruction(instr.pop(self.program_counter))
-
-            # check if cmd is data or instr
-            if cmd.startswith('.'):
-                self.assembler_directive(cmd)
+        data_ptr = 0
+        self.data = bytearray()
+        
+        for key, val in self.data_labels.items:
+            command: List[str, str] = self.data[val]
             
-            else:
+            byte: bytearray
+            if (command[0] is ".word"):
+                # convert int to bytes
+                byte = bytearray(int(command[1]).to_bytes(4, 'big'))
+                    
+            elif (command[0] is ".asciiz"):
+                byte = bytearray(command[1])
+            
+            # Add to data array 
+            self.data.append(byte)
+            
+            # update data label
+            self.data[key] = data_ptr
+            data_ptr = data_ptr + len(byte)
+
+
+    def run(self):
+        for instr in self.instruction_set:
+            # Get instruction to run
+            cmd: Callable = self.get_instruction(instr.pop(self.program_counter))
                 # Run instruction
-                cmd(*instr)
+            cmd(self, *instr)
 
-                # increment pc by 1
-                self.program_counter += 1
+            # increment pc by 1
+            self.program_counter += 1
 
-    def assembler_directive(self, command):
-        match command:
-            case '.word':
-                
-
+    def get_instruction(self, cmd: str):
+        match cmd:
+            case "add":
+                return instructions.add
+            case "sub":
+                return instructions.sub
+            case "addi":
+                return instructions.addi
+            case "addu":
+                return instructions.addu
+            case "subu":
+                return instructions.subu
+            case "addiu":
+                return instructions.addiu
+            case "mul":
+                return instructions.mul
+            case "mult":
+                return instructions.mult
+            case "and_":
+                return instructions.and_
+            case "or":
+                return instructions.or_
+            case "andi":
+                return instructions.ori_
+            case "sll":
+                return instructions.sll_
+            case "srl":
+                return instructions.srl_
+            case "lw":
+                return instructions.lw
+            case "sw":
+                return instructions.sw
+            case "lui":
+                return instructions.lui
+            case "la":
+                return instructions.la
+            case "li":
+                return instructions.li
+            case "mfhi":
+                return instructions.mfhi
+            case "mflo"
+                return instructions.
 # DATATYPES TO FOLLOW
