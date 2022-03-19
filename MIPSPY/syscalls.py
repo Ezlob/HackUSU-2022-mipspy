@@ -5,13 +5,14 @@ def syscall(v):
     match v:
         case 1 | 2 | 3 |4:
            #print cases
-           if(Dict.get("v0") ) {
-               value = $a0
+           if(Dict.get("v0") != 0) :
+               value = Dict.get("v0")
+               Dict["v0"] = 0
                print(value)
-           } else if (Dict.get("f12"))
-                value = $f12
+           elif (Dict.get("f12") != 0):
+                value = Dict.get("f12")
+                Dict["f12"] = 0
                 print(value)
-            return
         case 5:
 
             return
