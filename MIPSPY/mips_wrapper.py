@@ -1,4 +1,6 @@
 from typing import Callable
+
+from matplotlib import lines
 from .mips import MIPS
 
 
@@ -30,7 +32,7 @@ class debugger(MIPS):
                 file.write(f"{num} : {line}\n")
 
     def run(self, lines_to_run: int):
-        for _ in range(lines_to_run):
+        while lines_to_run != 0:
             instruction = self.instruction_set[self.program_counter]
             # Get instruction to run
             cmd: Callable = self.get_instruction(instruction[0])
@@ -40,10 +42,11 @@ class debugger(MIPS):
 
             # increment pc by 1
             self.program_counter += 1
-
+            lines_to_run -= 1
+            
     def debug_loop(self):
         # Commands to implement
-        # run [lines]
+        # run [lines, -1 to run all]
         # br [condition]
         # dump [file]
         
@@ -52,8 +55,11 @@ class debugger(MIPS):
             arguments = n.split()
             match arguments[0]:
                 case 'run':
-                    pass
+                    lines = int(arguments[1])
+                    self.run(lines)
                 case 'br':
                     pass
                 case 'dump':
                     pass
+                case '_':
+                    print("invalid command, use h for help")
