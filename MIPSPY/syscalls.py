@@ -7,8 +7,10 @@ def syscall(mips: MIPS):
     match watch:
         case 1: 
             if (mips.registers.get("$a0") != 0):
-                value = int(mips.registers.get("$a0"))
-                print(value)
+                try:
+                    value = int(mips.registers.get("$a0"))
+                except ValueError:
+                    
                 
             # f12 for double or float
             elif (mips.registers.get("$f12") != 0):

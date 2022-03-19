@@ -1,6 +1,5 @@
 from typing import Callable
 
-from matplotlib import lines
 from .mips import MIPS
 
 
