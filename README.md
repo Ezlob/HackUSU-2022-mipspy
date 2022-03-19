@@ -3,6 +3,21 @@
 
 MIPSPY aims to simplyfy the running, debugging, and creation of simple mips scripts using a lightweight terminal design, rather than a burdensome IDE like some other clients do.
 
+## FEATURES
+
+### TERMINAL BASED GUI
+While it may not be the prettiest design, or the most user intuitive, having a lightweight debugger that can be easily used alongside your favorite editors and IDE's is the perfect choice.  Much better than those clunky windows based solutions like mars.
+
+The ease of use of simple commands and clear instructions will speed up any mips project you'd need.
+
+### SAVE STATES
+We took one of the best parts of video game emulation and brought it into our debugger.  Simply save your postion by creating a checkpoint, and load it back when you start to debug again! You can even save multiple to juggle between scenarios.
+
+### Simple breakpoints, labels, and memory viewing
+No opening a window, or searching google for how to's, just type br and you're good to go!
+
+We've also simplified the PC to match up directly with each command, so now you know that PC 3 is always line 3.
+
 
 ## *DESIGNING PROCESS*
 

@@ -1,4 +1,5 @@
 from ast import arg
+import pickle
 from typing import Callable, Dict, List
 from os import get_terminal_size
 
@@ -6,6 +7,12 @@ from .mips import MIPS
 
 
 class debugger(MIPS):
+    cp_data : List
+    cp_instr : List
+    cp_reg : List
+    cp_pc : int
+    cp_labels : List
+    
     
     def __init__(self, file: str):
         self.breakpoints: Dict = dict()
@@ -112,16 +119,50 @@ class debugger(MIPS):
                         else:
                             print("-| Error: Invalid parameters passed:\n"
                                   "-| Follow the template `create name *pos*`")
+                    case 'cp' | 'checkpoint':
+                        if len(arguments[1:]) == 0:
+                            self.checkpoint(f"checkpoint: {self.program_counter}")
+                        else:
+                            self.checkpoint(arguments[1])
+                    case 'load':
+                        if len(arguments[1:]) != 1:
+                            print("-| invalid command, use h for help")
+                        else:
+                            self.load_checkpoint(arguments[1])
+                            
                     case 'help':
                         self.help()   
                          
                     case '_':
-                        print("invalid command, use h for help")
+                        print("-| invalid command, use h for help")
                         
         except KeyboardInterrupt:
             print("\n-| Exiting program...")
-                        
-                    
+    
+    def checkpoint(self, filename):
+        self.cp_data = self.data_set.copy()
+        self.cp_instr = self.instruction_set.copy()
+        self.cp_reg = self.registers.copy()
+        self.cp_pc = self.program_counter
+        self.cp_labels = self.instr_labels.copy()
+        tt = (self.cp_data, self.cp_instr, self.cp_reg, self.cp_pc, self.instr_labels)
+        
+        # Save CP to file
+        with open(filename + '.pickle', 'wb') as f:
+            pickle.dump(tt, file=f)
+
+    def load_checkpoint(self, filename):
+        
+        # Load pickle into class
+        with open(filename + '.pickle', 'rb') as file:
+            tt = pickle.load(file) 
+            self.data_set = tt[0].copy()
+            self.instruction_set = tt[1].copy()
+            self.registers = tt[2].copy()
+            self.program_counter = tt[3] 
+            self.instr_labels = tt[4].copy()
+        
+        
     def bp_set(self, arguments: List[str]):
         for arg in arguments:
             if arg in self.instr_labels:
