@@ -42,7 +42,7 @@ def addu(mips: MIPS, reg1, reg2, reg3):
 
 
 # subtract unsigned
-def subu(mips: MIPS, mips: MIPS, reg1, reg2, reg3):
+def subu(mips: MIPS, reg1, reg2, reg3):
     mips.registers[reg1] = mips.registers[reg2] - mips.registers[reg3]
 
 

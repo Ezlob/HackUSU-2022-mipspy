@@ -1,8 +1,7 @@
 from mips import MIPS
+import sys
 
-mips = MIPS()
-
-def syscall():
+def syscall(mips):
     match mips.registers.get("v0"):
         case 1 | 2 | 3 | 4:
             # print cases
