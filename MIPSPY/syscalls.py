@@ -6,19 +6,13 @@ def syscall(mips: MIPS):
     watch = int(mips.registers.get("$v0"))
     match watch:
         case 1: 
-            if (mips.registers.get("$a0") != 0):
-                try:
-                    value = int(mips.registers.get("$a0"))
-                except ValueError:
-                    
-                
-            # f12 for double or float
-            elif (mips.registers.get("$f12") != 0):
-                value = mips.registers.get("$f12")
-                print(value)
-            return
+            value = mips.registers.get("$a0")
+            print(int(value))
         case 2 | 3:
-            pass
+            value = mips.registers.get("$f12")
+            value = mips.registers.get("$f12")
+            print(value)
+            
         case 4:
             value = mips.registers.get('$a0')
             print_string(mips.data[mips.data_labels[value]:])

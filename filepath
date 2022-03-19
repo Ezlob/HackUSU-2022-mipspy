@@ -1,26 +1,70 @@
 Instruction set
-0 : ['la', '$a0', 'hello_msg']
-1 : ['jal', 'print_string']
-2 : ['j', 'terminate']
-3 : ['li', '$v0', '4']
-4 : ['syscall']
-5 : ['jr', '$ra']
-6 : ['li', '$v0', '10']
-7 : ['syscall']
+0 : ['.globl', 'main']
+1 : ['la', '$a0', 'array']
+2 : ['li', '$a1', '4']
+3 : ['li', '$a2', '0']
+4 : ['li', '$a3', '6']
+5 : ['jal', 'binarySearch']
+6 : ['move', '$a0', '$v0']
+7 : ['li', '$v0', '1']
+8 : ['syscall']
+9 : ['li', '$v0', '10']
+10 : ['syscall']
+11 : ['addi', '$sp', '$sp', '-20']
+12 : ['sw', '$ra', '0($sp)']
+13 : ['sw', '$a0', '4($sp)']
+14 : ['sw', '$a1', '8($sp)']
+15 : ['sw', '$a2', '12($sp)']
+16 : ['sw', '$a3', '16($sp)']
+17 : ['slt', '$t0', '$a3', '$a2']
+18 : ['li', '$t1', '1']
+19 : ['beq', '$t0', '$t1', 'valueNotFound']
+20 : ['sub', '$t0', '$a3', '$a2']
+21 : ['li', '$t1', '2']
+22 : ['div', '$t0', '$t1']
+23 : ['mflo', '$t0']
+24 : ['add', '$t0', '$t0', '$a2']
+25 : ['add', '$t3', '$t0', '$t0']
+26 : ['add', '$t3', '$t3', '$t3']
+27 : ['add', '$t2', '$t0', '$a0']
+28 : ['lw', '$t2', '0($t2)']
+29 : ['blt', '$a1', '$t2', 'recurseToLeft']
+30 : ['bgt', '$a1', '$t2', 'recurseToRight']
+31 : ['move', '$v0', '$t0']
+32 : ['j', 'end']
+33 : ['addi', '$t0', '$t0', '-1']
+34 : ['move', '$a3', '$t0']
+35 : ['jal', 'binarySearch']
+36 : ['j', 'end']
+37 : ['addi', '$t0', '$t0', '1']
+38 : ['move', '$a2', '$t0']
+39 : ['jal', 'binarySearch']
+40 : ['j', 'end']
+41 : ['li', '$v0', '-1']
+42 : ['lw', '$ra', '0($sp)']
+43 : ['lw', '$s0', '4($sp)']
+44 : ['lw', '$s1', '8($sp)']
+45 : ['lw', '$a2', '12($sp)']
+46 : ['lw', '$a3', '16($sp)']
+47 : ['addi', '$sp', '$sp', '20']
+48 : ['jr', '$ra']
 
 
 
 Data set
-0 : ['.asciiz', '\\nHello Friend.\\n\\n']
+0 : ['.word', '0', '1', '2', '3', '4', '5', '6']
 
 
 
 Instruction labels
-0 : hello_msg
+0 : array
 
 
 
 Data labels
 0 : main
-1 : print_string
-2 : terminate
+1 : binarySearch
+2 : recurseToLeft
+3 : recurseToRight
+4 : valueNotFound
+5 : end
