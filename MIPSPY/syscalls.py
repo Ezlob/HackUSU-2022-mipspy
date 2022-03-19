@@ -1,5 +1,5 @@
 import sys
-from MIPS.mips import MIPS
+from .mips import MIPS
 
 def syscall(mips: MIPS):
     match mips.registers.get("v0"):

@@ -39,7 +39,7 @@ def assemble(fileName) -> Tuple[List, Dict, List, Dict]:
         instrListPos = 0
         
         for line in file:
-            lineAsList = shlex.split(line)
+            lineAsList = shlex.split(line, posix=False)
             #This next for loop is just to help find the point where things in a line are just comments, then we'll use that location to boop it out of the list we add to >
             tracker = 0
             for item in lineAsList:

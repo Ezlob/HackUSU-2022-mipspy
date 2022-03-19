@@ -1,6 +1,4 @@
-from atexit import register
 from math import ceil
-from re import M
 from mips import MIPS
 
 # Helper function

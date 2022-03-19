@@ -1,10 +1,4 @@
-from email.policy import default
-import sys
 from typing import Dict, List, Callable
-from MIPSPY.syscalls import syscall
-
-from assemble import assembler
-import instructions
 from math import ceil
 
 
@@ -17,9 +11,10 @@ class MIPS:
     data: bytearray
     
     def __init__(self, file: str):
-
+        from .assemble import assemble
+        
         self.program_counter = 0
-        self.memory: List = List()
+        self.memory: List = list()
         self.registers: Dict[str, int] = {
             "$zero": 0,
             "$$0": 0,
@@ -54,14 +49,14 @@ class MIPS:
             "$ra": 0,
         }
         # Load instructions
-        self.instructions, self.instr_labels, self.data, self.data_labels = assembler(file)
+        self.instruction_set, self.instr_labels, self.data_set, self.data_labels = assemble(file)
 
         # Load Data into memory
         data_ptr = 0
         self.data = bytearray()
         
-        for key, val in self.data_labels.items:
-            command: List[str, str] = self.data[val]
+        for key, val in self.data_labels.items():
+            command: List[str, str] = self.data_set[val]
             
             byte: bytearray
             if (command[0] == ".word"):
@@ -69,13 +64,13 @@ class MIPS:
                 byte = bytearray(int(command[1]).to_bytes(4, 'big'))
                     
             elif (command[0] == ".asciiz"):
-                byte = bytearray(command[1])
+                byte = bytearray(command[1], 'utf-8')
             
             # Add to data array 
-            self.data.append(byte)
+            self.data += byte
             
             # update data label
-            self.data[key] = data_ptr
+            self.data_labels[key] = data_ptr
             data_ptr = data_ptr + len(byte)
 
 
@@ -90,7 +85,9 @@ class MIPS:
             self.program_counter += 1
 
     def get_instruction(self, cmd: str):
-        "maps the requested function to its call"
+        from .syscalls import syscall
+        import .instructions
+        
         match cmd:
             case "add":
                 return instructions.add
