@@ -42,7 +42,6 @@ def syscall():
         case 10:
             # exit
             sys.exit()
-            return
         case 11:
             # print_character
             value = mips.registers.get("a0")
@@ -76,4 +75,3 @@ def syscall():
             # exit2
             mips.registers["a0"] = input()
             sys.exit()
-            return
