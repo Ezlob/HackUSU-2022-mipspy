@@ -74,10 +74,10 @@ class MIPS:
             
             # update data label
             self.data_labels[key] = self.data_ptr
-            self.data_ptr = self.data_ptr + len(byte)
+            self.data_ptr = self.data_ptr + len(byte) - 1
 
-            # Update %sp
-            self.registers['$sp'] = self.data_ptr
+        # Update %sp
+        self.registers['$sp'] = len(self.data) - 1
 
     def run(self):
         while True:
