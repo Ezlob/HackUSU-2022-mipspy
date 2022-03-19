@@ -5,8 +5,10 @@ from math import ceil
 
 class MIPS:
     def __init__(self, file: str):
+        
+        self.program_counter = 0
         self.memory: List = List()
-        self.registers: Dict = {
+        self.registers: Dict[str, int] = {
             "$0": 0,
             "v0": 0,
             "v1": 0,
@@ -38,8 +40,8 @@ class MIPS:
             "fp": 0,
             "ra": 0,
         }
-        
-        self.labels : Dict =  assembler(file)
+
+        self.labels: Dict = assembler(file)
 
     def load_data(self, instructions: List[Tuple], labels: Dict):
         for instr in instructions:
