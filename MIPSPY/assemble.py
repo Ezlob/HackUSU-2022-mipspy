@@ -21,31 +21,43 @@ Assembler
 Returns the instructions and labels (in that order) as a tuple
 
 """
-def assembler(fileName) -> Tuple[List, Dict]:
+def assembler(fileName) -> Tuple[list, dict]:
 
     file = open(fileName)
     
-    sections = {}
-    instructions = []
+    instrList = []
+    instrLabel = {}
+    dataList = []
+    dataLabel = {}
 
+    
     
     
     #something = instantiated
     instructionsPos = 0
+    sectionsPos = 0
 
     for line in file:
         lineAsList = line.split()
 
-        instructions[instructionsPos] = lineAsList
-        
+
+        #This next for loop is just to help find the point where things in a line are just comments, then we'll use that location to boop it out of the list we add to the instructions list later on
+        tracker = 0
         for item in lineAsList:
-            if item[0] == '.' or item[-1] == ':':
-                sections.update({item: instructionsPos}) #update dict with section or label
+            if item[0] != '#':
+                tracker += 1
+            else:
+                break
+
+        lineAsList = lineAsList[:tracker]
         
-        instructionsPos += 1
+        #if we come across .data, then we need to boop then next lines into the data array and data dict until we come across another .label with 
 
-    print(f"{instructions}")
+    for item in instructions:
+        print(f"{item}")
 
+    print(f"{sections}")
 
-
+if __name__ == '__main__':
+    assembler(sys.argv[1])
 
