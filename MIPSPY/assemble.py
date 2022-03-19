@@ -18,10 +18,12 @@ from typing import Tuple, List, Dict
 Assembler
 Returns the instructions and labels (in that order) as a tuple
 
+return instruction array, instruction labels, data array, data labels
+
 """
 
 
-def assembler(fileName) -> Tuple[List, List, Dict]:
+def assembler(fileName) -> Tuple[List, Dict, List, Dict]:
 
     file = open(fileName)
 

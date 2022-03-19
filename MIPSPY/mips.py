@@ -43,20 +43,28 @@ class MIPS:
         # Load instructions
         self.instructions, self.labels = assembler(file)
         # Load program counter
-        self.program_counter = self.labels.get(".text")
 
         # Load Data into memory
 
     def load_data(self, instructions: List[Tuple], labels: Dict):
         for instr in instructions:
             # Get instruction to run
-            cmd: function = get_instruction(instr.pop(self.program_counter))
+            cmd: str = get_instruction(instr.pop(self.program_counter))
 
-            # Run instruction
-            cmd(*instr)
+            # check if cmd is data or instr
+            if cmd.startswith('.'):
+                self.assembler_directive(cmd)
+            
+            else:
+                # Run instruction
+                cmd(*instr)
 
-            # increment pc by 1
-            self.program_counter += 1
+                # increment pc by 1
+                self.program_counter += 1
 
+    def assembler_directive(self, command):
+        match command:
+            case '.word':
+                
 
 # DATATYPES TO FOLLOW
