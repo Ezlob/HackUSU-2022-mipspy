@@ -1,29 +1,41 @@
-def syscall(v):
-    match v:
+from mips import MIPS
+
+mips = MIPS()
+
+def syscall():
+    match mips.registers.get("v0"):
         case 1 | 2 | 3 | 4:
            #print cases
            #a0 for string or int
-           if (Dict.get("a0") != 0) :
-                value = Dict.get("a0")
-                Dict["a0"] = 0
+           if (mips.registers.get("a0") != 0) :
+                value = mips.registers.get("a0")
+                mips.registers["a0"] = 0
                 print(value)
            #f12 for double or float 
-           elif (Dict.get("f12") != 0):
-                value = Dict.get("f12")
-                Dict["f12"] = 0
+           elif (mips.registers.get("f12") != 0):
+                value = mips.registers.get("f12")
+                mips.registers["f12"] = 0
                 print(value)
         case 5:
             #read_int
-            Dict["v0"] = int(input())
+            mips.registers["v0"] = int(input())
             return
         case 6 | 7:
             #read_float or read_double
-            Dict["v0"] = float(input())
+            mips.registers["v0"] = float(input())
             return
         case 8:
             #read_string
-            Dict["v0"] = input();
-            return
+            str_length = mips.registers.get("a1")
+            input_str = input()
+            if(len(input_str) > str_length):
+                print("Error! Too many characters in string")
+                sys.exit()
+            else:
+                #TODO: set this to a memory location specified by the value of a0
+                #rather than putting it in a0
+                mips.registers["a0"] = input_str
+                return
         case 9:
             #sbrk
             return

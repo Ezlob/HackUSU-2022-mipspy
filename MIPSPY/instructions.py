@@ -35,7 +35,7 @@ def sub(reg1, reg2, reg3):
 
 # add immediate
 def addi(reg1, reg2, int):
-    mips.registers[reg1] = mips.registers[reg2] + int
+    mips.registers[reg1] = mips.registers[reg2] + int(imd)
 
 
 # add unsigned
@@ -49,8 +49,8 @@ def subu(reg1, reg2, reg3):
 
 
 # add immediate unsigned
-def addiu(reg1, reg2, int):
-    mips.registers[reg1] = mips.registers[reg2] + int
+def addiu(reg1, reg2, imd):
+    mips.registers[reg1] = mips.registers[reg2] + int(imd)
 
 
 # multiply (without overflow)
@@ -79,20 +79,20 @@ def or_(reg1,reg2,reg3):
     mips.registers[reg1] = mips.registers[reg2] | mips.registers[reg3]
 
 #and immediate
-def andi_(reg1,reg2,int):
-    mips.registers[reg1] = mips.registers[reg2] & int
+def andi_(reg1,reg2,imd):
+    mips.registers[reg1] = mips.registers[reg2] & int(imd)
 
 #or immediate
-def ori_ (reg1,reg2,int):
-    mips.registers[reg1] = mips.registers[reg2] | int
+def ori_ (reg1,reg2,imd):
+    mips.registers[reg1] = mips.registers[reg2] | int(imd)
 
 #shift left logical
-def sll_(reg1,reg2,int):
-    mips.registers[reg1] = mips.registers[reg2] << int
+def sll_(reg1,reg2,imd):
+    mips.registers[reg1] = mips.registers[reg2] << int(imd)
 
 #shift right logical
-def srl_(reg1,reg2, int):
-    mips.registers[reg1] = mips.registers[reg2] >> int
+def srl_(reg1,reg2, imd):
+    mips.registers[reg1] = mips.registers[reg2] >> int(imd)
 
 #DATATRANSFER
 
@@ -131,6 +131,64 @@ def move(reg1,reg2):
 
 #CONDITIONAL BRANCH
 
-#branch on equal 
+#branch on equal
+def beg(reg1,reg2, imd):
+    if reg1 == reg2:
+        mips.program_counter += int(imd)
 
+#branch on not equal
+def dne(reg1,reg2,imd):
+    if reg1 != reg2:
+        mips.program_counter += int(imd)
+
+#branch on greater than
+def bgt(reg1,reg2,imd):
+    if reg1 > reg2:
+        mips.program_counter += int(imd)
+
+#branch on greater than or equal
+def bge(reg1,reg2,imd):
+    if reg1 >= reg2:
+        mips.program_counter += int(imd)
+
+#branch on less than
+def blt(reg1,reg2,imd):
+    if reg1 < reg2:
+        mips.program_counter += int(imd)
+
+#branch on less than or equal
+def ble(reg1,reg2,imd):
+    if reg1 <= reg2:
+        mips.program_counter += int(imd)
+
+#COMPARISON
+
+#set on less than
+def slt(reg1,reg2,reg3):
+    if reg2 == reg3:
+        mips.registers[reg1] = 1
+    else:
+        mips.registers[reg1] = 0
+
+#set on less than immediate
+def slti(reg1,reg2,imd):
+    if reg2 == int(imd):
+        mips.registers[reg1] = 1
+    else:
+        mips.registers[reg1] = 0
+
+#UNCONDITIONAL JUMP
+
+#jump
+def j (imd):
+    mips.program_counter += int(imd)
+
+#jump register
+def jr (reg1):
+    mips.program_counter += mips.registers[reg1] 
+ 
+#jump and link
+def jal(imd):
+    #Dal do
+    mips.program_counter += int(imd)
 
