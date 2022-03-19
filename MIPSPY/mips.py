@@ -1,10 +1,10 @@
-from typing import Dict, List
-from xmlrpc.client import Boolean
+from typing import Dict, List, Tuple
+from assemble import assembler
 from math import ceil
 
 
 class MIPS:
-    def __init__(self):
+    def __init__(self, file: str):
         self.memory: List = List()
         self.registers: Dict = {
             "$0": 0,
@@ -38,10 +38,16 @@ class MIPS:
             "fp": 0,
             "ra": 0,
         }
+        
+        self.labels : Dict =  assembler(file)
 
-    def load_data(self, instructions: List, labels: Dict):
+    def load_data(self, instructions: List[Tuple], labels: Dict):
         for instr in instructions:
-            
+            # Get instruction to run
+            cmd: function = get_instruction(instr.pop(0))
+
+            # Run instruction
+            cmd(*instr)
 
 
 # DATATYPES TO FOLLOW
