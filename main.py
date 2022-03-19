@@ -29,5 +29,5 @@ else:
     m = MIPS(file)
 
 
-# THIS IS WHERE WE WILL TIE IN THE GUI
+# this is what runs the program
 m.run()
