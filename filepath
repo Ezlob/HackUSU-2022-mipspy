@@ -1,0 +1,26 @@
+Instruction set
+0 : ['la', '$a0', 'hello_msg']
+1 : ['jal', 'print_string']
+2 : ['j', 'terminate']
+3 : ['li', '$v0', '4']
+4 : ['syscall']
+5 : ['jr', '$ra']
+6 : ['li', '$v0', '10']
+7 : ['syscall']
+
+
+
+Data set
+0 : ['.asciiz', '\\nHello Friend.\\n\\n']
+
+
+
+Instruction labels
+0 : hello_msg
+
+
+
+Data labels
+0 : main
+1 : print_string
+2 : terminate

@@ -40,10 +40,10 @@ syscall
 ## Function int fibonacci (int n)
 fibonacci:
 # Prologue
-addi $sp, $sp, -12
-sw $ra, 8($sp)
-sw $s0, 4($sp)
-sw $s1, 0($sp)
+addi $sp, $sp, 12
+sw $ra, -12($sp)
+sw $s0, -8($sp)
+sw $s1, -4($sp)
 move $s0, $a0
 li $v0, 1 # return value for terminal condition
 ble $s0, 0x2, fibonacciExit # check terminal condition

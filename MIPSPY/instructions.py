@@ -152,7 +152,7 @@ def sw(mips: MIPS, reg1, adr1):
 
     l = list(mips.data)
     if (len(l) - 1) < adr1 + 4:
-        l += [0] * 4
+        l += [0] * ((adr1 + 4) - ((len(l)) - 1))
     l[adr1 : adr1 + 4] = bs
     mips.data = bytearray(l)
     mips.data_ptr = len(mips.data) - 1
