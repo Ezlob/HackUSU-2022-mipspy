@@ -1,1 +1,3 @@
-#place ignored files here
+.vscode
+.pyc
+.venv
