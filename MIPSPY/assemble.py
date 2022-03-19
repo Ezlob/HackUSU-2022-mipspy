@@ -13,7 +13,14 @@
 #return the something
 
 
-def assembler(fileName):
+from typing import Tuple
+
+"""
+Assembler
+Returns the instructions and labels (in that order) as a tuple
+
+"""
+def assembler(fileName) -> Tuple[List, Dict]:
 
     file = open(fileName)
     
