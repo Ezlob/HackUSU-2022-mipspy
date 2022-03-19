@@ -12,6 +12,7 @@
 #put file into something
 #return the something
 
+import sys
 
 def assembler(fileName):
 
@@ -23,13 +24,21 @@ def assembler(fileName):
     
     
     #something = instantiated
-   instructionsPos = 0
+    instructionsPos = 0
 
     for line in file:
-        instructions.append(line)
-        tempObj = line.split()
-        for item in tempObj:
-            if item[0] == '.' or item[-1] == ':':
-                sections.update({item: instructionsPos})
+        lineAsList = line.split()
+
+        instructions[instructionsPos] = lineAsList
         
+        for item in lineAsList:
+            if item[0] == '.' or item[-1] == ':':
+                sections.update({item: instructionsPos}) #update dict with section or label
+        
+        instructionsPos += 1
+
+    print(f"{instructions}")
+
+
+
 
