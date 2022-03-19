@@ -64,11 +64,11 @@ class MIPS:
             command: List[str, str] = self.data[val]
             
             byte: bytearray
-            if (command[0] is ".word"):
+            if (command[0] == ".word"):
                 # convert int to bytes
                 byte = bytearray(int(command[1]).to_bytes(4, 'big'))
                     
-            elif (command[0] is ".asciiz"):
+            elif (command[0] == ".asciiz"):
                 byte = bytearray(command[1])
             
             # Add to data array 

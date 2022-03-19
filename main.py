@@ -1,3 +1,5 @@
+#! user/bin/python3
+
 from MIPSPY.mips import MIPS
 import sys
 
