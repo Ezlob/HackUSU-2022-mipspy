@@ -1,3 +1,4 @@
+from email.policy import default
 from typing import Dict, List, Callable
 
 from assemble import assembler
@@ -86,6 +87,7 @@ class MIPS:
             self.program_counter += 1
 
     def get_instruction(self, cmd: str):
+        "maps the requested function to its call"
         match cmd:
             case "add":
                 return instructions.add
@@ -125,6 +127,32 @@ class MIPS:
                 return instructions.li
             case "mfhi":
                 return instructions.mfhi
-            case "mflo"
-                return instructions.
-# DATATYPES TO FOLLOW
+            case "mflo":
+                return instructions.mflo
+            case "move":
+                return instructions.move
+            case "beg":
+                return instructions.beg
+            case "bne":
+                return instructions.bne
+            case "bgt":
+                return instructions.bgt
+            case "blt":
+                return instructions.blt
+            case "ble":
+                return instructions.ble
+            case "slt":
+                return instructions.slt
+            case "slti":
+                return instructions.slti
+            case "j":
+                return instructions.j
+            case "jr":
+                return instructions.jr
+            case "jal":
+                return instructions.jal
+            case "jalr":
+                return instructions.jalr
+            
+            case _:
+                raise NotImplementedError

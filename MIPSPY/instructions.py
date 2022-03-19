@@ -150,7 +150,7 @@ def beg(mips: MIPS, reg1, reg2, imd):
 
 
 # branch on not equal
-def dne(mips: MIPS, reg1, reg2, imd):
+def bne(mips: MIPS, reg1, reg2, imd):
     if reg1 != reg2:
         mips.program_counter += int(imd)
 
@@ -200,8 +200,8 @@ def slti(mips: MIPS, reg1, reg2, imd):
 # UNCONDITIONAL JUMP
 
 # jump
-def j(mips: MIPS, imd):
-    mips.program_counter += int(imd) // 4
+def j(mips: MIPS, label):
+    mips.program_counter = mips.instr_labels[label]
 
 
 # jump register
@@ -210,6 +210,11 @@ def jr(mips: MIPS, reg1):
 
 
 # jump and link
-def jal(mips: MIPS, imd):
-    # Dal do
-    mips.program_counter += int(imd)
+def jal(mips: MIPS, label):
+    mips.registers['ra'] = mips.program_counter
+    mips.program_counter = mips.instr_labels[label]
+
+# jump and link register
+def jalr(mips: MIPS, reg1):
+    mips.registers.ra = mips.program_counter
+    mips.program_counter = mips.instr_labels[mips.registers[reg1]]
