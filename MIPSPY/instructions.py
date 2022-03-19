@@ -34,7 +34,7 @@ def sub(reg1, reg2, reg3):
 
 
 # add immediate
-def addi(reg1, reg2, int):
+def addi(reg1, reg2, imd):
     mips.registers[reg1] = mips.registers[reg2] + int(imd)
 
 
