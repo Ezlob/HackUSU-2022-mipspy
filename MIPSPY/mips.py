@@ -1,5 +1,6 @@
 from typing import Dict, List
 from xmlrpc.client import Boolean
+from math import ceil
 
 
 class MIPS:
@@ -37,22 +38,10 @@ class MIPS:
             "fp": 0,
             "ra": 0,
         }
-        
-    def load_data(self, inscructions: List, labes: Dict):
-        pass
+
+    def load_data(self, instructions: List, labels: Dict):
+        for instr in instructions:
+            
 
 
 # DATATYPES TO FOLLOW
-
-class Integer(int):
-    signed: bool = True
-    
-    def __init__(self, value):
-        self.value = value
-        self.signed: Boolean = True
-        
-    def __add__(self, other):
-        tmp = self.value + other
-        if self.signed:
-            if
-        
