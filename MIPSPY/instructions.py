@@ -5,7 +5,6 @@ from mips import MIPS
 
 mips = MIPS()
 
-
 # Helper function
 def validate(tmp: int) -> int:
     if tmp > 2147483647:
