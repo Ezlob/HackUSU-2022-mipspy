@@ -5,8 +5,10 @@ from math import ceil
 
 class MIPS:
     def __init__(self, file: str):
+
+        self.program_counter = 0
         self.memory: List = List()
-        self.registers: Dict = {
+        self.registers: Dict[str, int] = {
             "$0": 0,
             "v0": 0,
             "v1": 0,
@@ -38,16 +40,31 @@ class MIPS:
             "fp": 0,
             "ra": 0,
         }
-        
-        self.labels : Dict =  assembler(file)
+        # Load instructions
+        self.instructions, self.labels = assembler(file)
+        # Load program counter
+
+        # Load Data into memory
 
     def load_data(self, instructions: List[Tuple], labels: Dict):
         for instr in instructions:
             # Get instruction to run
-            cmd: function = get_instruction(instr.pop(0))
+            cmd: str = get_instruction(instr.pop(self.program_counter))
 
-            # Run instruction
-            cmd(*instr)
+            # check if cmd is data or instr
+            if cmd.startswith('.'):
+                self.assembler_directive(cmd)
+            
+            else:
+                # Run instruction
+                cmd(*instr)
 
+                # increment pc by 1
+                self.program_counter += 1
+
+    def assembler_directive(self, command):
+        match command:
+            case '.word':
+                
 
 # DATATYPES TO FOLLOW

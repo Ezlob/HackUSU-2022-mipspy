@@ -1,27 +1,28 @@
-
-#open the file
-#read each line from the file
-
-
-#need:
-#dictionary for sections/label positions in the code
-
-#an array of each set of instructions in an array taht mirrors it's place in the file as well
+# open the file
+# read each line from the file
 
 
-#put file into something
-#return the something
+# need:
+# dictionary for sections/label positions in the code
+
+# an array of each set of instructions in an array taht mirrors it's place in the file as well
+
+
+# put file into something
+# return the something
 
 import sys
 
-from typing import Tuple
+from typing import Tuple, List, Dict
 
 """
 Assembler
 Returns the instructions and labels (in that order) as a tuple
 
+return instruction array, instruction labels, data array, data labels
+
 """
-def assembler(fileName) -> Tuple[list, dict]:
+def assembler(fileName) -> Tuple[List, Dict, List, Dict]:
 
     file = open(fileName)
     
@@ -60,4 +61,6 @@ def assembler(fileName) -> Tuple[list, dict]:
 
 if __name__ == '__main__':
     assembler(sys.argv[1])
+
+
 
