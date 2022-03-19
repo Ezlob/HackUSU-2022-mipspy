@@ -2,7 +2,6 @@ from mips import MIPS
 
 mips = MIPS()
 
-
 def syscall():
     match mips.registers.get("v0"):
         case 1 | 2 | 3 | 4:
@@ -34,14 +33,11 @@ def syscall():
                 print("Error! Too many characters in string")
             else:
                 # TODO: set this to a memory location specified 
-                # by the value of a0
+                # by the value of a0, then reset a0 to 0
                 mips.registers["a0"] = input_str
             return
         case 9:
-            # sbrk-allocate a certain amount of space in memory at address
-            mem_amount = mips.registers.get("a0")
-            address = int(input())
-            #TODO: figure it out :thumbsup:
+            #sbrk not supported
             return
         case 10:
             # exit
@@ -72,7 +68,8 @@ def syscall():
             return
         case 16:
             # close
-            file_to_close = mips.registers["a0"]
+            file_to_close = mips.registers.get("a0")
+            mips.registers["a0"] = 0
             file_to_close.close()
             return
         case 17:
