@@ -21,7 +21,7 @@ Returns the instructions and labels (in that order) as a tuple
 """
 
 
-def assembler(fileName) -> Tuple[List, Dict]:
+def assembler(fileName) -> Tuple[List, List, Dict]:
 
     file = open(fileName)
 

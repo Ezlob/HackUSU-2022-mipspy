@@ -5,7 +5,7 @@ from math import ceil
 
 class MIPS:
     def __init__(self, file: str):
-        
+
         self.program_counter = 0
         self.memory: List = List()
         self.registers: Dict[str, int] = {
@@ -40,16 +40,23 @@ class MIPS:
             "fp": 0,
             "ra": 0,
         }
+        # Load instructions
+        self.instructions, self.labels = assembler(file)
+        # Load program counter
+        self.program_counter = self.labels.get(".text")
 
-        self.labels: Dict = assembler(file)
+        # Load Data into memory
 
     def load_data(self, instructions: List[Tuple], labels: Dict):
         for instr in instructions:
             # Get instruction to run
-            cmd: function = get_instruction(instr.pop(0))
+            cmd: function = get_instruction(instr.pop(self.program_counter))
 
             # Run instruction
             cmd(*instr)
+
+            # increment pc by 1
+            self.program_counter += 1
 
 
 # DATATYPES TO FOLLOW
