@@ -1,5 +1,7 @@
+from ctypes import addressof
 from math import ceil
-from mips import MIPS
+import re
+from .mips import MIPS
 
 # Helper function
 def validate(tmp: int) -> int:
@@ -13,6 +15,29 @@ def validate(tmp: int) -> int:
         tmp = int.from_bytes(byte, "big", signed=True)
 
     return tmp
+
+
+def sw_offset(mips: MIPS, register: str) -> int:
+    offset, reg = register.split("(")
+    # Conver offset
+    offset = int(offset)
+    # Clean value by cutting off leading parenthesis
+    reg = reg[:-1]
+
+    # get value
+    return mips.registers[reg] + offset
+
+
+def lw_offset(mips: MIPS, register: str) -> int:
+    # we only convert RA
+    offset, reg = register.split("(")
+    # Conver offset
+    offset = int(offset)
+    # Clean value by cutting off leading parenthesis
+    reg = reg[:-1]
+
+    # get value
+    return mips.registers[reg] + offset
 
 
 # ARTHMETIC INSTRUCTIONS
@@ -31,6 +56,9 @@ def sub(mips: MIPS, reg1, reg2, reg3):
 
 # add immediate
 def addi(mips: MIPS, reg1, reg2, imd):
+    if reg1 == "$ra":
+        # Convert back to base 1
+        mips.registers[reg1] = (mips.registers[reg2] + int(imd)) // 4
     mips.registers[reg1] = mips.registers[reg2] + int(imd)
 
 
@@ -56,7 +84,13 @@ def mul(mips: MIPS, reg1, reg2, reg3):
 
 # multiply (with overflow) Dal. do
 def mult(mips: MIPS, reg1, reg2):
-    mips
+    ans: int = mips.registers[reg1] * mips.registers[reg2]
+    bs = ans.to_bytes(ceil(ans.bit_length() / 8), "big")
+    if len(bs) > 4:
+        mips.registers["$lo"] = int.from_bytes(bs[-4:], "big")  # grabs last 4 bytes
+        mips.registers["$hi"] = int.from_bytes(bs[:-4], "big")  # grabs first 4 bytes
+    else:
+        mips.registers["$lo"] = int.from_bytes(bs, "big")  # grabs last 4 bytes
 
 
 # divide Dal. do
@@ -99,13 +133,35 @@ def srl_(mips: MIPS, reg1, reg2, imd):
 # DATATRANSFER
 
 # load word
-def lw(mips: MIPS, reg1, adr1):
-    mips.registers[reg1] = adr1
+def lw(mips: MIPS, reg1, adr1: str):
+    print(adr1)
+    if "(" in adr1:
+        adr1 = lw_offset(mips, adr1)
+    print(mips.data[adr1 : adr1 + 4])
+    ret = int.from_bytes(mips.data[adr1 : adr1 + 4], "big", signed=True)
+    if reg1 == "ra":
+        ret = ret // 4
+
+    mips.registers[reg1] = ret
 
 
 # store word
 def sw(mips: MIPS, reg1, adr1):
-    adr1 = mips.registers[reg1]
+    bs = mips.registers[reg1].to_bytes(4, "big", signed=True)
+
+    if "(" in adr1:
+        adr1 = sw_offset(mips, adr1)
+
+    adr1 = adr1  # -> convert to 'our system'
+    controlpoint = mips.data_ptr + adr1
+    first_half = mips.data[:controlpoint]
+    try:
+        mips.data = first_half + bs + mips.data[(controlpoint + len(bs)) :]
+    except IndexError:
+        # Create more room if needed
+        mips.data = mips.data + (b"\x00" * len(bs))
+        mips.data = first_half + bs + mips.data[(controlpoint + len(bs)) :]
+    mips.data_ptr = len(mips.data)
 
 
 # load upper immediate
@@ -120,18 +176,18 @@ def la(mips: MIPS, reg1, lab):
 
 
 # load immediate
-def li(mips: MIPS, reg1, lab):
-    lab = mips.registers[reg1]
+def li(mips: MIPS, reg1, imm):
+    mips.registers[reg1] = imm
 
 
 # move from hi
 def mfhi(mips: MIPS, reg1):
-    mips.registers[reg1]  # Dal DO
+    mips.registers[reg1] = mips.registers["$hi"]
 
 
 # move from low
 def mflo(mips: MIPS, reg1):
-    mips.registers[reg1]  # Dal DO
+    mips.registers[reg1] = mips.registers["$lo"]
 
 
 # move
@@ -142,39 +198,46 @@ def move(mips: MIPS, reg1, reg2):
 # CONDITIONAL BRANCH
 
 # branch on equal
-def beg(mips: MIPS, reg1, reg2, imd):
+def beq(mips: MIPS, reg1, reg2, label):
     if reg1 == reg2:
-        mips.program_counter += int(imd)
+        mips.program_counter = mips.instr_labels[label]
+        mips.program_counter -= 1
 
 
 # branch on not equal
-def bne(mips: MIPS, reg1, reg2, imd):
-    if reg1 != reg2:
-        mips.program_counter += int(imd)
+def bne(mips: MIPS, reg1, reg2, label):
+
+    if mips.registers[reg1] != mips.registers[reg2]:
+        mips.program_counter = mips.instr_labels[label]
+        mips.program_counter -= 1
 
 
 # branch on greater than
 def bgt(mips: MIPS, reg1, reg2, imd):
     if reg1 > reg2:
         mips.program_counter += int(imd)
+        mips.program_counter -= 1
 
 
 # branch on greater than or equal
 def bge(mips: MIPS, reg1, reg2, imd):
     if reg1 >= reg2:
         mips.program_counter += int(imd)
+        mips.program_counter -= 1
 
 
 # branch on less than
 def blt(mips: MIPS, reg1, reg2, imd):
     if reg1 < reg2:
         mips.program_counter += int(imd)
+        mips.program_counter -= 1
 
 
 # branch on less than or equal
-def ble(mips: MIPS, reg1, reg2, imd):
+def ble(mips: MIPS, reg1, reg2, label):
     if reg1 <= reg2:
-        mips.program_counter += int(imd)
+        mips.program_counter = mips.instr_labels[label]
+        mips.program_counter -= 1
 
 
 # COMPARISON
@@ -201,18 +264,25 @@ def slti(mips: MIPS, reg1, reg2, imd):
 def j(mips: MIPS, label):
     mips.program_counter = mips.instr_labels[label]
 
+    mips.program_counter -= 1
+
 
 # jump register
 def jr(mips: MIPS, reg1):
-    mips.program_counter += mips.registers[reg1] // 4
+    mips.program_counter = mips.registers[reg1]
 
 
 # jump and link
 def jal(mips: MIPS, label):
-    mips.registers['ra'] = mips.program_counter
+    mips.registers["$ra"] = mips.program_counter
     mips.program_counter = mips.instr_labels[label]
+
+    mips.program_counter -= 1
+
 
 # jump and link register
 def jalr(mips: MIPS, reg1):
-    mips.registers.ra = mips.program_counter
+    mips.registers["$ra"] = mips.program_counter
     mips.program_counter = mips.instr_labels[mips.registers[reg1]]
+
+    mips.program_counter -= 1

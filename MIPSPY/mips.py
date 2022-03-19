@@ -17,7 +17,7 @@ class MIPS:
         self.memory: List = list()
         self.registers: Dict[str, int] = {
             "$zero": 0,
-            "$$0": 0,
+            "$0": 0,
             "$v0": 0,
             "$v1": 0,
             "$a0": 0,
@@ -47,12 +47,14 @@ class MIPS:
             "$sp": 0,
             "$fp": 0,
             "$ra": 0,
+            "$hi": 0,
+            "$lo": 0
         }
         # Load instructions
         self.instruction_set, self.instr_labels, self.data_set, self.data_labels = assemble(file)
 
         # Load Data into memory
-        data_ptr = 0
+        self.data_ptr = 0
         self.data = bytearray()
         
         for key, val in self.data_labels.items():
@@ -64,29 +66,34 @@ class MIPS:
                 byte = bytearray(int(command[1]).to_bytes(4, 'big'))
                     
             elif (command[0] == ".asciiz"):
-                byte = bytearray(command[1], 'utf-8')
+                command[1] = command[1].replace('"', '')
+                byte = bytearray(command[1] + '\0', 'utf-8')
             
             # Add to data array 
             self.data += byte
             
             # update data label
-            self.data_labels[key] = data_ptr
-            data_ptr = data_ptr + len(byte)
+            self.data_labels[key] = self.data_ptr
+            self.data_ptr = self.data_ptr + len(byte)
 
+            # Update %sp
+            self.registers['$sp'] = self.data_ptr
 
     def run(self):
-        for instr in self.instruction_set:
+        while True:
+            instruction = self.instruction_set[self.program_counter]
             # Get instruction to run
-            cmd: Callable = self.get_instruction(instr.pop(self.program_counter))
+            cmd: Callable = self.get_instruction(instruction[0])
                 # Run instruction
-            cmd(self, *instr)
+
+            cmd(self, *instruction[1:])
 
             # increment pc by 1
             self.program_counter += 1
 
     def get_instruction(self, cmd: str):
         from .syscalls import syscall
-        import .instructions
+        from . import instructions
         
         match cmd:
             case "add":
@@ -131,8 +138,8 @@ class MIPS:
                 return instructions.mflo
             case "move":
                 return instructions.move
-            case "beg":
-                return instructions.beg
+            case "beq":
+                return instructions.beq
             case "bne":
                 return instructions.bne
             case "bgt":
